@@ -6,42 +6,54 @@
 #    By: danielda <danielda@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/11/29 18:51:16 by danielda          #+#    #+#              #
-#    Updated: 2024/11/29 18:54:13 by danielda         ###   ########.fr        #
+#    Updated: 2024/12/04 20:42:58 by danielda         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-OUT = pipex
+PROG	= pipex
+PROG_B  = pipex_bonus
 
-SRC = src/pipex.c src/utils.c
+SRCS 	= srcs/pipex.c srcs/utils.c
+OBJS 	= ${SRCS:.c=.o}
+MAIN	= srcs/pipex.c
 
-OBJS = ${SRC:.c=.o}
+SRCS_B	= srcs/srcs/utils.c srcs/utils_bonus.c
+OBJS_B	= ${SRCS_B:.c=.o}
+MAIN_B	= srcs/pipex_bonus.c
 
-CC = cc
-RM = rm -f
-CFLAGS = -Wall -Wextra -Werror -g
-INCLUDE = -I include
-MAKE = make -C
-LIBFT_PATH = libft
-LIBFT = -L ${LIBFT_PATH} -lft
-#valgrind --leak-check=full --trace-children=yes
+HEADER	= -Iincludes
 
-.c.o:
-		${CC} ${CFLAGS} ${INCLUDE} -c $< -o ${<:.c=.o}
+CC 		= cc
+CFLAGS 	= -Wall -Wextra -Werror -g
 
-$(OUT): ${OBJS}
-		${MAKE} ${LIBFT_PATH} all
-		${CC} ${OBJS} ${LIBFT} -o ${OUT}
+.c.o:		%.o : %.c
+					@gcc ${CFLAGS} ${HEADER} -c $< -o $(<:.c=.o)
 
-all:	${OUT}
+all: 		${PROG}
+
+${PROG}:	${OBJS}
+					@echo "\033[33m----Compiling lib----"
+					@make re -C ./libft
+					@$(CC) ${OBJS} -Llibft -lft -o ${PROG}
+					@echo "\033[32mPipex Compiled! ᕦ(\033[31m♥\033[32m_\033[31m♥\033[32m)ᕤ\n"
+
+
+bonus:		${PROG_B}
+
+${PROG_B}:	${OBJS_B}
+					@echo "\033[33m----Compiling lib----"
+					@make re -C ./libft
+					@$(CC) ${OBJS_B} -Llibft -lft -o ${PROG_B}
+					@echo "\033[32mPipex Bonus Compiled! ᕦ(\033[31m♥\033[32m_\033[31m♥\033[32m)ᕤ\n"
 
 clean:
-		${MAKE} ${LIBFT_PATH} clean
-		${RM} ${OBJS}
+					@make clean -C ./libft
+					@rm -f ${OBJS} ${OBJS_B}
 
-fclean: clean
-		${MAKE} ${LIBFT_PATH} fclean
-		${RM} ${OUT}
+fclean: 	clean
+					@make fclean -C ./libft
+					@rm -f $(NAME)
+					@rm -f ${PROG}
+					@echo "\n\033[31mDeleting EVERYTHING! ⌐(ಠ۾ಠ)¬\n"
 
-re: fclean all
-
-.PHONY: all clean fclean re
+re:			fclean all

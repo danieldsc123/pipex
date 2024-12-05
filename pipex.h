@@ -6,7 +6,7 @@
 /*   By: danielda <danielda@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 18:51:38 by danielda          #+#    #+#             */
-/*   Updated: 2024/12/01 18:19:47 by danielda         ###   ########.fr       */
+/*   Updated: 2024/12/04 20:37:38 by danielda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,10 +19,10 @@
 # include <stdio.h>
 # include <sys/wait.h>
 # include <fcntl.h>
-# include "../libft/libft.h"
+# include "./libft/libft.h"
 
-/* Mandatory functions */
 void	error(void);
 char	*find_path(char *cmd, char **envp);
-int		get_next_line(char **line);
+void	parent_process(char **argv, char **enpv, int *fd);
+void	child_exec(char **arguments, char **environment, int *pipe_fd);
 void	execute(char *argv, char **envp);
