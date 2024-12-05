@@ -5,55 +5,43 @@
 #                                                     +:+ +:+         +:+      #
 #    By: danielda <danielda@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2024/11/29 18:51:16 by danielda          #+#    #+#              #
-#    Updated: 2024/12/04 20:42:58 by danielda         ###   ########.fr        #
+#    Created: 2024/12/04 23:00:00 by danielda          #+#    #+#              #
+#    Updated: 2024/12/04 23:17:37 by danielda         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-PROG	= pipex
-PROG_B  = pipex_bonus
+NAME = pipex
+LIBFT = ./libft
+CC = cc
+CFLAGS = -Wall -Wextra -Werror
+SRC = pipex.c utils.c utils.c  # Adicione todos os arquivos .c aqui
+OBJ = $(SRC:.c=.o)
+LIBFT_A = $(LIBFT)/libft.a
 
-SRCS 	= srcs/pipex.c srcs/utils.c
-OBJS 	= ${SRCS:.c=.o}
-MAIN	= srcs/pipex.c
+# Directories
+INCLUDE_DIR = includes
 
-SRCS_B	= srcs/srcs/utils.c srcs/utils_bonus.c
-OBJS_B	= ${SRCS_B:.c=.o}
-MAIN_B	= srcs/pipex_bonus.c
+# Rules
 
-HEADER	= -Iincludes
+all: $(NAME)
 
-CC 		= cc
-CFLAGS 	= -Wall -Wextra -Werror -g
+$(NAME): $(OBJ) $(LIBFT_A)
+	$(CC) $(OBJ) -o $(NAME) $(LIBFT_A)
 
-.c.o:		%.o : %.c
-					@gcc ${CFLAGS} ${HEADER} -c $< -o $(<:.c=.o)
+$(LIBFT_A):
+	make -C $(LIBFT)
 
-all: 		${PROG}
-
-${PROG}:	${OBJS}
-					@echo "\033[33m----Compiling lib----"
-					@make re -C ./libft
-					@$(CC) ${OBJS} -Llibft -lft -o ${PROG}
-					@echo "\033[32mPipex Compiled! ᕦ(\033[31m♥\033[32m_\033[31m♥\033[32m)ᕤ\n"
-
-
-bonus:		${PROG_B}
-
-${PROG_B}:	${OBJS_B}
-					@echo "\033[33m----Compiling lib----"
-					@make re -C ./libft
-					@$(CC) ${OBJS_B} -Llibft -lft -o ${PROG_B}
-					@echo "\033[32mPipex Bonus Compiled! ᕦ(\033[31m♥\033[32m_\033[31m♥\033[32m)ᕤ\n"
+$(OBJ): $(SRC)
+	$(CC) $(CFLAGS) -I$(INCLUDE_DIR) -c $^
 
 clean:
-					@make clean -C ./libft
-					@rm -f ${OBJS} ${OBJS_B}
+	make clean -C $(LIBFT)
+	rm -f $(OBJ)
 
-fclean: 	clean
-					@make fclean -C ./libft
-					@rm -f $(NAME)
-					@rm -f ${PROG}
-					@echo "\n\033[31mDeleting EVERYTHING! ⌐(ಠ۾ಠ)¬\n"
+fclean: clean
+	make fclean -C $(LIBFT)
+	rm -f $(NAME)
 
-re:			fclean all
+re: fclean all
+
+.PHONY: all clean fclean re

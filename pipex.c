@@ -6,11 +6,11 @@
 /*   By: danielda <danielda@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 18:51:26 by danielda          #+#    #+#             */
-/*   Updated: 2024/12/04 21:39:21 by danielda         ###   ########.fr       */
+/*   Updated: 2024/12/04 23:15:46 by danielda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/pipex.h"
+#include "pipex.h"
 
 void	child_exec(char **arguments, char **environment, int *pipe_fd)
 {

@@ -6,11 +6,11 @@
 /*   By: danielda <danielda@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/01 18:09:08 by danielda          #+#    #+#             */
-/*   Updated: 2024/12/04 21:38:57 by danielda         ###   ########.fr       */
+/*   Updated: 2024/12/04 23:15:52 by danielda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/pipex.h"
+#include "pipex.h"
 
 char	*find_path(char *cmd, char **envp)
 {
@@ -23,7 +23,10 @@ char	*find_path(char *cmd, char **envp)
 	while (envp[i])
 	{
 		if (ft_strnstr(envp[i], "PATH=", 5))
-			paths = ft_split((envp[i] + 5, ':'), (break));
+		{
+			paths = ft_split((envp[i] + 5, ':'));
+			(break);
+		}
 		i++;
 	}
 	if (!paths)

@@ -6,7 +6,7 @@
 /*   By: danielda <danielda@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 18:51:38 by danielda          #+#    #+#             */
-/*   Updated: 2024/12/04 20:37:38 by danielda         ###   ########.fr       */
+/*   Updated: 2024/12/04 22:30:53 by danielda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@
 # include <stdio.h>
 # include <sys/wait.h>
 # include <fcntl.h>
-# include "./libft/libft.h"
+# include "../libft/libft.h"
 
 void	error(void);
 char	*find_path(char *cmd, char **envp);
