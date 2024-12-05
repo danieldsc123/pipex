@@ -6,26 +6,26 @@
 /*   By: danielda <danielda@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 18:51:26 by danielda          #+#    #+#             */
-/*   Updated: 2024/12/04 23:15:46 by danielda         ###   ########.fr       */
+/*   Updated: 2024/12/05 19:32:28 by danielda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-void	child_exec(char **arguments, char **environment, int *pipe_fd)
+void	child_process(char **argv, char **envp, int *fd)
 {
-	int	input_file;
+	int		filein;
 
-	input_file = open(arguments[1], O_RDONLY, 0777);
-	if (input_file == -1)
-		error_handler();
-	dup2(pipe_fd[1], STDOUT_FILENO);
-	dup2(input_file, STDIN_FILENO);
-	close(pipe_fd[0]);
-	run_command(arguments[2], environment);
+	filein = open(argv[1], O_RDONLY, 0777);
+	if (filein == -1)
+		error();
+	dup2(fd[1], STDOUT_FILENO);
+	dup2(filein, STDIN_FILENO);
+	close(fd[0]);
+	execute(argv[2], envp);
 }
 
-void	parent_process(char **argv, char **enpv, int *fd)
+void	parent_process(char **argv, char **envp, int *fd)
 {
 	int	file_out;
 
@@ -55,7 +55,7 @@ int	main(int argc, char **argv, char **envp)
 	if (pid1 == -1)
 		error();
 	if (pid1 == 0)
-		child_exec(argv, envp, fd);
+		child_process(argv, envp, fd);
 	else
 	{
 		waitpid(pid1, NULL, 0);

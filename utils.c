@@ -6,31 +6,19 @@
 /*   By: danielda <danielda@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/01 18:09:08 by danielda          #+#    #+#             */
-/*   Updated: 2024/12/04 23:15:52 by danielda         ###   ########.fr       */
+/*   Updated: 2024/12/05 18:13:02 by danielda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
+#include "libft/libft.h"
 
-char	*find_path(char *cmd, char **envp)
+char	*check_paths(char **paths, char *cmd)
 {
-	char	**paths;
+	char	*part_path;
 	char	*path;
 	int		i;
-	char	*part_path;
 
-	i = 0;
-	while (envp[i])
-	{
-		if (ft_strnstr(envp[i], "PATH=", 5))
-		{
-			paths = ft_split((envp[i] + 5, ':'));
-			(break);
-		}
-		i++;
-	}
-	if (!paths)
-		return (NULL);
 	i = 0;
 	while (paths[i])
 	{
@@ -38,10 +26,40 @@ char	*find_path(char *cmd, char **envp)
 		path = ft_strjoin(part_path, cmd);
 		free(part_path);
 		if (access(path, F_OK) == 0)
-			return ((path), free(path));
-	i++;
+			return (path);
+		free(path);
+		i++;
 	}
 	return (NULL);
+}
+
+char	*find_path(char *cmd, char **envp)
+{
+	char	**paths;
+	char	*path;
+	int		i;
+
+	paths = NULL;
+	i = 0;
+	while (envp[i])
+	{
+		if (ft_strnstr(envp[i], "PATH=", 5))
+		{
+			paths = ft_split(envp[i] + 5, ':');
+			break ;
+		}
+		i++;
+	}
+	if (!paths)
+		return (NULL);
+	path = check_paths(paths, cmd);
+	while (paths[i])
+	{
+		free(paths[i]);
+		i++;
+	}
+	free(paths);
+	return (path);
 }
 
 void	execute(char *argv, char **envp)
