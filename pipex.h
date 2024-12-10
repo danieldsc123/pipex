@@ -6,7 +6,7 @@
 /*   By: danielda <danielda@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 18:51:38 by danielda          #+#    #+#             */
-/*   Updated: 2024/12/05 19:43:20 by danielda         ###   ########.fr       */
+/*   Updated: 2024/12/09 21:13:05 by danielda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@
 # include <stdio.h>
 # include <sys/wait.h>
 # include <fcntl.h>
-# include "libft/libft.h"
+# include "../libft/libft.h"
 
 void	error(void);
 char	*find_path(char *cmd, char **envp);
@@ -27,5 +27,6 @@ void	parent_process(char **argv, char **enpv, int *fd);
 void	child_exec(char **arguments, char **environment, int *pipe_fd);
 void	execute(char *argv, char **envp);
 char	*check_paths(char **paths, char *cmd);
+void	free_cmd(char **cmd);
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: danielda <danielda@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 18:51:26 by danielda          #+#    #+#             */
-/*   Updated: 2024/12/05 19:32:28 by danielda         ###   ########.fr       */
+/*   Updated: 2024/12/09 18:43:28 by danielda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,12 +16,16 @@ void	child_process(char **argv, char **envp, int *fd)
 {
 	int		filein;
 
-	filein = open(argv[1], O_RDONLY, 0777);
+	filein = open(argv[1], O_RDONLY);
 	if (filein == -1)
-		error();
+	{
+		perror("Error opening input file");
+		exit(EXIT_FAILURE);
+	}
 	dup2(fd[1], STDOUT_FILENO);
 	dup2(filein, STDIN_FILENO);
 	close(fd[0]);
+	close(filein);
 	execute(argv[2], envp);
 }
 
@@ -29,9 +33,12 @@ void	parent_process(char **argv, char **envp, int *fd)
 {
 	int	file_out;
 
-	file_out = open(argv[4], O_WRONLY | O_CREAT | O_TRUNC, 0777);
+	file_out = open(argv[4], O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	if (file_out == -1)
-		error();
+	{
+		perror("Error opening input file");
+		exit(EXIT_FAILURE);
+	}
 	dup2(fd[0], STDIN_FILENO);
 	dup2(file_out, STDOUT_FILENO);
 	close(fd[1]);
@@ -50,15 +57,16 @@ int	main(int argc, char **argv, char **envp)
 		return (1);
 	}
 	if (pipe(fd) == -1)
-		error();
+		exit(EXIT_FAILURE);
 	pid1 = fork();
 	if (pid1 == -1)
-		error();
+		exit(EXIT_FAILURE);
 	if (pid1 == 0)
 		child_process(argv, envp, fd);
 	else
 	{
-		waitpid(pid1, NULL, 0);
+		if (waitpid(pid1, NULL, 0) == -1)
+			exit(EXIT_FAILURE);
 		parent_process(argv, envp, fd);
 	}
 	return (0);
