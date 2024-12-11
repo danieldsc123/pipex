@@ -6,7 +6,7 @@
 /*   By: danielda <danielda@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 18:51:26 by danielda          #+#    #+#             */
-/*   Updated: 2024/12/09 18:43:28 by danielda         ###   ########.fr       */
+/*   Updated: 2024/12/11 00:15:28 by danielda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,8 @@ void	child_process(char **argv, char **envp, int *fd)
 		perror("Error opening input file");
 		exit(EXIT_FAILURE);
 	}
+	if (dup2(fd[1], STDOUT_FILENO) == -1 || dup2(filein, STDIN_FILENO) == -1)
+		exit(EXIT_FAILURE);
 	dup2(fd[1], STDOUT_FILENO);
 	dup2(filein, STDIN_FILENO);
 	close(fd[0]);
@@ -39,6 +41,8 @@ void	parent_process(char **argv, char **envp, int *fd)
 		perror("Error opening input file");
 		exit(EXIT_FAILURE);
 	}
+	if (dup2(fd[0], STDIN_FILENO) == -1 || dup2(file_out, STDOUT_FILENO) == -1)
+		exit(EXIT_FAILURE);
 	dup2(fd[0], STDIN_FILENO);
 	dup2(file_out, STDOUT_FILENO);
 	close(fd[1]);
@@ -52,8 +56,8 @@ int	main(int argc, char **argv, char **envp)
 
 	if (argc != 5)
 	{
-		ft_putstr_fd("\033[31mError: Bad arguments\n\e[0m", 2);
-		ft_putstr_fd("Ex: ./pipex <file1> <cmd1> <cmd2> <file2>\n", 1);
+		ft_putstr_fd("Error: Bad arguments\n", 2);
+		ft_putstr_fd("Usage: ./pipex <file1> <cmd1> <cmd2> <file2>\n", 1);
 		return (1);
 	}
 	if (pipe(fd) == -1)
@@ -70,4 +74,10 @@ int	main(int argc, char **argv, char **envp)
 		parent_process(argv, envp, fd);
 	}
 	return (0);
+}
+
+void	error(void)
+{
+	perror("\033[31mError\033[0m");
+	exit(EXIT_FAILURE);
 }

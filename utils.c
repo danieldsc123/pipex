@@ -6,7 +6,7 @@
 /*   By: danielda <danielda@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/01 18:09:08 by danielda          #+#    #+#             */
-/*   Updated: 2024/12/09 21:53:52 by danielda         ###   ########.fr       */
+/*   Updated: 2024/12/11 00:42:17 by danielda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,8 @@ char	*find_path(char *cmd, char **envp)
 		if (ft_strnstr(envp[i], "PATH=", 5))
 		{
 			paths = ft_split(envp[i] + 5, ':');
+			if (!paths)
+				return (NULL);
 			break ;
 		}
 		i++;
@@ -53,13 +55,10 @@ char	*find_path(char *cmd, char **envp)
 	if (!paths)
 		return (NULL);
 	path = check_paths(paths, cmd);
-	if (!path)
-	{
-		while (paths[i])
-			free(paths[i]);
-		free(paths);
-		return (NULL);
-	}
+	i = 0;
+	while (paths[i])
+		free(paths[i++]);
+	free(paths);
 	return (path);
 }
 
@@ -74,14 +73,14 @@ void	execute(char *argv, char **envp)
 	if (!cmd || !cmd[0])
 	{
 		perror("comand not faund");
-		exit(EXIT_FAILURE);
+		exit(127);
 	}
 	path = find_path(cmd[0], envp);
 	if (!path)
 	{
 		free_cmd(cmd);
 		perror("comand not faund");
-		exit(EXIT_FAILURE);
+		exit(127);
 	}
 	if (execve(path, cmd, envp) == -1)
 	{	
@@ -106,10 +105,4 @@ void	free_cmd(char **cmd)
 		}
 		free(cmd);
 	}
-}
-
-void	error(void)
-{
-	perror("\033[31mError\033[0m");
-	exit(EXIT_FAILURE);
 }
